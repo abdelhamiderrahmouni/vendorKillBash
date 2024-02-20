@@ -7,9 +7,13 @@ read search_path
 # Find all vendor directories within the search path
 vendor_dirs=$(find "$search_path" -type d -name "vendor")
 
-# List the vendor directories
+# List the vendor directories with their sizes and project names
 echo "Found vendor directories:"
-echo "$vendor_dirs"
+while IFS= read -r dir; do
+    size=$(du -sh "$dir" | cut -f1)
+    project_name=$(basename "$(dirname "$dir")")
+    echo "Project: $project_name | Path: $dir | Size: $size"
+done <<< "$vendor_dirs"
 
 # Prompt the user to select directories to delete
 echo "Enter the numbers of the directories to delete, separated by spaces:"
@@ -17,7 +21,7 @@ read -a delete_numbers
 
 # Delete the selected directories
 for num in "${delete_numbers[@]}"; do
-    dir_to_delete=$(echo "$vendor_dirs" | sed "${num}q;d")
+    dir_to_delete=$(echo "$vendor_dirs" | sed -n "${num}p")
     rm -rf "$dir_to_delete"
     echo "Deleted $dir_to_delete"
 done

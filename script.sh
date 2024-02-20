@@ -10,14 +10,10 @@ vendor_dirs=$(find "$search_path" -type d -name "vendor" -maxdepth  2)
 # List the vendor directories with their sizes and project names
 echo "Found vendor directories:"
 while IFS= read -r dir; do
-    # Calculate the size of the directory
     size=$(du -sh "$dir" | cut -f1)
-    
-    # Extract the project name from the path
     project_name=$(basename "$(dirname "$dir")")
-    
-    # Print the project name, path, and size
-    echo "Project: $project_name | Path: $dir | Size: $size"
+    printf "%-40s Size: %s\n" "$project_name" "$size"
+    echo "Path: $dir"
 done <<< "$vendor_dirs"
 
 # Prompt the user to select directories to delete

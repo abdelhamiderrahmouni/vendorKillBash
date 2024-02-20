@@ -5,7 +5,7 @@ echo "Enter the path to search for vendor directories:"
 read search_path
 
 # Find all vendor directories within the search path
-vendor_dirs=$(find "$search_path" -maxdepth  2 -type d -name "vendor")
+vendor_dirs=$(find "$search_path" -maxdepth   2 -type d -name "vendor")
 
 # Define colors for output
 GREEN='\033[0;32m'
@@ -20,10 +20,18 @@ while IFS= read -r dir; do
 done <<< "$vendor_dirs"
 
 # the sum of all vendor folders sizes in megabytes
-total_size=$(echo "scale=2; $total_size / 1024" | bc)
+total_size_in_mb=$(echo "scale=2; $total_size /  1024" | bc)
+
+# Check if the size is greater than  1024 MB (1 GB)
+if (( $(echo "$total_size_in_mb >  1024" | bc -l) )); then
+    total_size_in_gb=$(echo "scale=2; $total_size_in_mb /  1024" | bc)
+    total_size_unit="G"
+else
+    total_size_unit="M"
+fi
 
 # List the vendor directories with their sizes and project names
-printf "\nFound %s vendor directories: %s \n" $(echo "$vendor_dirs" | wc -l) "$total_size"
+printf "\nFound %s vendor directories: %s%s \n" $(echo "$vendor_dirs" | wc -l) "$total_size_in_gb" "$total_size_unit"
 echo "--------------------------------------------------------------------------------"
 echo ""
 

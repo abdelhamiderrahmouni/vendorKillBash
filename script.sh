@@ -15,11 +15,16 @@ RESET='\033[0m'
 # List the vendor directories with their sizes and project names
 echo "Found vendor directories:"
 while IFS= read -r dir; do
+    # Calculate the size of the directory
     size=$(du -sh "$dir" | cut -f1)
+    
+    # Extract the project name from the path
     project_name=$(basename "$(dirname "$dir")")
-    echo -e "${GREEN}${project_name} ${GREEN}size: ${size}${RESET}"
-    echo -e "${LIGHT_GRAY}Path: ${dir}${RESET}"
-    echo ""
+    
+    # Print the project name, path, and size
+    printf "${GREEN}%-40s %10s${RESET}\n" "$project_name" "Size: $size"
+    echo "Path: $dir"
+    echo "" # Add a newline between each directory
 done <<< "$vendor_dirs"
 
 # Prompt the user to select directories to delete

@@ -5,7 +5,7 @@ echo "Enter the path to search for vendor directories:"
 read search_path
 
 # Find all vendor directories within the search path
-vendor_dirs=$(find "$search_path" -type d -name "vendor" -maxdepth  2)
+vendor_dirs=$(find "$search_path" -maxdepth  2 -type d -name "vendor")
 
 # Define colors for output
 GREEN='\033[0;32m'
@@ -14,17 +14,15 @@ RESET='\033[0m'
 
 # List the vendor directories with their sizes and project names
 echo "Found vendor directories:"
+counter=1
 while IFS= read -r dir; do
-    # Calculate the size of the directory
     size=$(du -sh "$dir" | cut -f1)
-    
-    # Extract the project name from the path
     project_name=$(basename "$(dirname "$dir")")
-    
-    # Print the project name, path, and size
-    printf "${GREEN}%-40s %10s${RESET}\n" "$project_name" "Size: $size"
+    printf "${GREEN}%s: %-40s Size: %s${RESET}\n" "$counter" "$project_name" "$size"
     echo "Path: $dir"
-    echo "" # Add a newline between each directory
+    echo "--------------------------------------------------------------------------------"
+    echo ""
+    ((counter++))
 done <<< "$vendor_dirs"
 
 # Prompt the user to select directories to delete

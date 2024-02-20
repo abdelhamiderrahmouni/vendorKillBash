@@ -12,8 +12,21 @@ GREEN='\033[0;32m'
 LIGHT_GRAY='\033[0;37m'
 RESET='\033[0m'
 
+# total size of vendor folders
+total_size=0
+while IFS= read -r dir; do
+    size=$(du -sh "$dir" | cut -f1)
+    total_size=$((total_size + $(du -s "$dir" | cut -f1)))
+done <<< "$vendor_dirs"
+
+# the sum of all vendor folders sizes in megabytes
+total_size=$(echo "scale=2; $total_size / 1024" | bc)
+
 # List the vendor directories with their sizes and project names
-echo "Found vendor directories:"
+printf "\nFound %s vendor directories: %s \n" $(echo "$vendor_dirs" | wc -l) "$total_size"
+echo "--------------------------------------------------------------------------------"
+echo ""
+
 counter=1
 while IFS= read -r dir; do
     size=$(du -sh "$dir" | cut -f1)

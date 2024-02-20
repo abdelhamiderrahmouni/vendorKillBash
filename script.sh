@@ -1,8 +1,7 @@
 #!/bin/bash
 
-# Prompt the user for the path to search
-echo "Enter the path to search for vendor directories:"
-read search_path
+# Use the provided path or the current directory if none was provided
+search_path="${1:-$PWD}"
 
 # Find all vendor directories within the search path
 vendor_dirs=$(find "$search_path" -maxdepth   2 -type d -name "vendor")
@@ -45,6 +44,11 @@ while IFS= read -r dir; do
     echo ""
     ((counter++))
 done <<< "$vendor_dirs"
+
+# List the vendor directories with their sizes and project names
+printf "\nFound %s vendor directories: %s%s \n" $(echo "$vendor_dirs" | wc -l) "$total_size_in_gb" "$total_size_unit"
+echo "--------------------------------------------------------------------------------"
+echo ""
 
 # Prompt the user to select directories to delete
 echo "Enter the numbers of the directories to delete, separated by spaces:"
